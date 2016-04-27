@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background_launche"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bus"/>
+    <LinearLayout
+        android:id="@+id/lin_1"
+        android:layout_below="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Source"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:textSize="28sp"/>
+        <Spinner
+            android:layout_weight="2"
+            android:id="@+id/source_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"></Spinner>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lin_2"
+        android:layout_below="@+id/lin_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Destination"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:textSize="28sp"/>
+        <Spinner
+            android:layout_weight="2"
+            android:id="@+id/destination_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"></Spinner>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/butn_go"
+        android:textColor="#ffffff"
+        android:text="GO"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/lin_2"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"/>
+
+</RelativeLayout>
