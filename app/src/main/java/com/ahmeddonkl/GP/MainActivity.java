@@ -1,28 +1,13 @@
 package com.ahmeddonkl.GP;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
-
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -40,15 +25,20 @@ public class MainActivity extends ActionBarActivity {
         mDestinationSpin=(android.widget.Spinner)findViewById(R.id.destination_spinner);
         mButtonGo = (Button)findViewById(R.id.butn_go);
 
-        sourceList.add("Giza");
+        //make list of sources
+        sourceList.add("Duki");
+        sourceList.add("Elmohandseen");
 
-        destinationList.add("Gamaa");
+        //make list of destination
         destinationList.add("Elsayada_aisha");
+        destinationList.add("Ben_elsarayat");
 
+        //make default array adapter of spinner source
         ArrayAdapter<String> sourceAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,sourceList);
         sourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSourceSpin.setAdapter(sourceAdapter);
 
+        //make default array adapter of spinner destination
         ArrayAdapter<String> destinationAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,destinationList);
         destinationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDestinationSpin.setAdapter(destinationAdapter);
@@ -56,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
         mButtonGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //get the source and destination selected by user
                 String source = mSourceSpin.getSelectedItem().toString();
                 String destination = mDestinationSpin.getSelectedItem().toString();
 

@@ -15,9 +15,12 @@ import java.util.List;
 class ViewHolder
 {
     TextView mBusNum ;
-    //TextView mBusPrice ;
-    TextView mBUSPrice ;
+    TextView mBusPrice ;
+    TextView mBusStart ;
     TextView mBusStations ;
+    TextView mBusWaiting ;
+    TextView mBusDuration ;
+    TextView mBusDistance;
 }
 
 public class BusAdapter extends ArrayAdapter<Bus> {
@@ -48,10 +51,13 @@ public class BusAdapter extends ArrayAdapter<Bus> {
             // well set up the ViewHolder
             holder = new ViewHolder();
             holder.mBusNum = (TextView) convertView.findViewById(R.id.item_bus_num);
-            //holder.mBusPrice = (TextView) convertView.findViewById(R.id.item_bus_price);
+            holder.mBusPrice = (TextView) convertView.findViewById(R.id.item_bus_price);
+            holder.mBusDistance = (TextView) convertView.findViewById(R.id.item_bus_distance);
+            holder.mBusDuration = (TextView) convertView.findViewById(R.id.item_bus_duration);
+            holder.mBusStations = (TextView) convertView.findViewById(R.id.item_bus_stations);
+            holder.mBusStart = (TextView) convertView.findViewById(R.id.item_bus_startTime);
+            holder.mBusWaiting = (TextView) convertView.findViewById(R.id.item_bus_waiting);
 
-            holder.mBUSPrice = (TextView) convertView.findViewById(R.id.item_bus_arr);
-            holder.mBusStations = (TextView) convertView.findViewById(R.id.item_bus_int);
             // store the holder with the view.
             convertView.setTag(holder);
         }
@@ -62,13 +68,18 @@ public class BusAdapter extends ArrayAdapter<Bus> {
             holder = (ViewHolder) convertView.getTag();
         }
         Bus obj = Buses.get(position);
-        holder.mBusNum.setText(String.valueOf(obj.getmNumber()));
-        //holder.mBusPrice.setText(String.valueOf(obj.getmPrice()));
-        holder.mBUSPrice.setText(String.valueOf(obj.getmPrice()));
-        holder.mBusStations.setText(String.valueOf(obj.getmStations()));
+        holder.mBusNum.setText(String.valueOf(obj.getmNumber().intValue()));
+        holder.mBusPrice.setText(String.valueOf(obj.getmPrice())+" LE");
+        holder.mBusStations.setText(obj.getSouDestStations());
+        holder.mBusWaiting.setText(obj.getWaiting());
+        holder.mBusStart.setText(obj.getmStartTime());
+        holder.mBusDuration.setText(obj.getDuration());
+        holder.mBusDistance.setText(obj.getDistance());
 
         return convertView;
     }
+
+
 }
 
 

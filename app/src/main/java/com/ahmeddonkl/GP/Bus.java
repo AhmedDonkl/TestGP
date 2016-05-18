@@ -7,26 +7,74 @@ public class Bus {
     private double mNumber;
     private String mStartTime;
     private String mIntervalTime;
-    private String mTripDuration;
+    private Double mTripDuration;
+    private String mStationsCoordinates;
     private String mStations;
+    private String waiting;
+    private String distance;
+    private String duration;
     private double mPrice;
     private double mNumberOfBuses;
 
-    public Bus(double mNumber , String mIntervalTime, double mNumberOfBuses, double mPrice, String mStartTime,String mStations,String mTripDuration) {
-        this.mNumber = mNumber;
+    private String souDestStations;
 
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getSouDestStations() {
+        return souDestStations;
+    }
+
+    public void setSouDestStations(String souDestStations) {
+        this.souDestStations = souDestStations;
+    }
+
+    public Bus(double mNumber , String mIntervalTime, double mNumberOfBuses, double mPrice, String mStartTime, String mStationsCoordinates, Double mTripDuration, String mStations) {
+        this.mNumber = mNumber;
         this.mStartTime = mStartTime;
         this.mIntervalTime = mIntervalTime;
         this.mNumberOfBuses = mNumberOfBuses;
         this.mPrice = mPrice;
         this.mStartTime = mStartTime;
-        this.mStations = mStations;
+        this.mStationsCoordinates = mStationsCoordinates;
+        this.mTripDuration = mTripDuration;
+        this.mStations=mStations;
+    }
+
+    public void setmTripDuration(Double mTripDuration) {
         this.mTripDuration = mTripDuration;
     }
 
+    public String getDistance() {
+        return distance;
+    }
 
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
 
-    public double getmNumber() {
+    public String getWaiting() {
+        return waiting;
+    }
+
+    public void setWaiting(String waiting) {
+        this.waiting = waiting;
+    }
+
+    public String getmStationsCoordinates() {
+        return mStationsCoordinates;
+    }
+
+    public void setmStationsCoordinates(String mStationsCoordinates) {
+        this.mStationsCoordinates = mStationsCoordinates;
+    }
+
+    public Double getmNumber() {
         return mNumber;
     }
 
@@ -48,13 +96,10 @@ public class Bus {
         this.mIntervalTime = mIntervalTime;
     }
 
-    public String getmTripDuration() {
+    public Double getmTripDuration() {
         return mTripDuration;
     }
 
-    public void setmmTripDuratione(String mTripDuration) {
-        this.mTripDuration = mTripDuration;
-    }
 
     public String getmStations() {
         return mStations;

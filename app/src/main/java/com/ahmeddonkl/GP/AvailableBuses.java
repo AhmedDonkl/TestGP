@@ -20,7 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -33,6 +35,8 @@ public class AvailableBuses extends ActionBarActivity {
     private BusAdapter mBusAdapter;
     private ProgressDialog mProgressDialog;
 
+    static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+
     String mSOurce,mDestination;
 
     @Override
@@ -40,12 +44,19 @@ public class AvailableBuses extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_available_buses);
 
+
         if(getIntent().hasExtra("destination")){
             mSOurce = getIntent().getStringExtra("source");
             mDestination = getIntent().getStringExtra("destination");
         }
+
         //linking list view
         mBusesList = (ListView)findViewById(R.id.buses_list);
+
+        //CREATE new array from buses class
+        List<Bus> busesResults=new ArrayList<>();
+        mBusAdapter = new BusAdapter(this,R.layout.bus_item,busesResults);
+        mBusesList.setAdapter(mBusAdapter);
 
         //initialize firebase
         Firebase.setAndroidContext(this);
@@ -64,9 +75,10 @@ public class AvailableBuses extends ActionBarActivity {
      */
     private void GetBuses(String source , String destination){
 
+        //show progress bar
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("Please Wait..");
-        mProgressDialog.setCancelable(false);
+        mProgressDialog.setCancelable(true);
         mProgressDialog.show();
 
         //here i can access destination directly on firebase with ( child().child() )
@@ -79,12 +91,14 @@ public class AvailableBuses extends ActionBarActivity {
                 try {
                     getBusesDataFromJson(mRequestResult);
                 } catch (JSONException e) {
+                    Toast.makeText(AvailableBuses.this,"Error Parsing Data!",Toast.LENGTH_SHORT).show();
                     mProgressDialog.dismiss();
                     e.printStackTrace();
                 }
             }
 
             @Override public void onCancelled(FirebaseError error) {
+                Toast.makeText(AvailableBuses.this,"Check Your Internet Connection",Toast.LENGTH_SHORT).show();
                 mProgressDialog.dismiss();
             }
         });
@@ -92,9 +106,6 @@ public class AvailableBuses extends ActionBarActivity {
 
     private void getBusesDataFromJson(String busesJsonStr)
             throws JSONException {
-
-        //CREATE new array from buses class
-        List<Bus> busesResults=new ArrayList<>();
 
         // These are the names of the JSON objects that need to be extracted.
         final String BUSES_ARRAY = "buses";
@@ -107,8 +118,8 @@ public class AvailableBuses extends ActionBarActivity {
         final String STATIONS_NAMES_KEY = "station_names";
         final String TRIP_DURATION_KEY = "trip_duration";
 
-        double bus_number,num_of_buses,price;
-        String arrival,start_time,interval_time,stations,trip_duration,stationName;
+        double bus_number,num_of_buses,price,trip_duration;
+        String arrival,start_time,interval_time,stations,stationName;
 
         //will contain the big object of string
         JSONObject busesJson = new JSONObject(busesJsonStr);
@@ -126,18 +137,13 @@ public class AvailableBuses extends ActionBarActivity {
             price = bus.getDouble(PRICE_KEY);
             start_time = bus.getString(START_KEY);
             stations = bus.getString(STATIONS_KEY);
-            trip_duration = bus.getString(TRIP_DURATION_KEY);
+            trip_duration = bus.getDouble(TRIP_DURATION_KEY);
             stationName = bus.getString(STATIONS_NAMES_KEY);
 
+            Bus bus1 =new Bus(bus_number,interval_time,num_of_buses,price,start_time,stations,trip_duration,stationName);
             //get time and waiting and distance
-            PerformBusCall(stations,stationName);
-
-            busesResults.add(new Bus(bus_number,interval_time,num_of_buses,price,start_time,stations,trip_duration));
+            PerformBusCall(bus1);
         }
-
-        mBusAdapter = new BusAdapter(this,R.layout.bus_item,busesResults);
-        mBusesList.setAdapter(mBusAdapter);
-
         mProgressDialog.dismiss();
     }
 
@@ -163,41 +169,105 @@ public class AvailableBuses extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void PerformBusCall(String stations,String stationNames){
+    public int calcWaiting(Double overallDuration , String startTime ,Double duration ){
 
-        String [] stationsCord = stations.split("\\|", -1);
-        String [] stationsNames = stationNames.split("\\|", -1);
+        String [] startArr = startTime.split("\\.", -1);
 
-        int sourceIndex = arrayPosition(stationsNames,mSOurce);
-        int destinationIndex = arrayPosition(stationsNames,mDestination);
+        Date start = new Date();
+        start.setHours(Integer.valueOf(startArr[0]));
+        start.setMinutes(Integer.valueOf(startArr[1]));
 
-        String origin = stationsCord[sourceIndex];
-        String destination = stationsCord[destinationIndex];
+        Date now = new Date();
+
+        Date startPlusOver = new Date();
+        Date startPlusDur = new Date();
+        while (true){
+            startPlusOver.setHours(start.getHours());
+            startPlusOver.setMinutes(start.getMinutes() + overallDuration.intValue());
+
+            if(start.before(now) && now.before(startPlusOver)){
+                startPlusDur.setHours(start.getHours());
+                startPlusDur.setMinutes(start.getMinutes()+duration.intValue());
+                if(now.before(startPlusDur)){
+                    return  startPlusDur.getMinutes() - now.getMinutes();
+                }
+                else{
+                    return  ((60 - now.getMinutes()) + duration.intValue());
+                }
+            }
+            start.setMinutes(start.getMinutes()+overallDuration.intValue());
+        }
+    }
+
+    public void PerformBusCall(final Bus bus){
+
+        String [] stationsCord = bus.getmStationsCoordinates().split("\\|", -1);
+        String [] stationsNames = bus.getmStations().split("\\|", -1);
+
+        final int sourceIndex = arrayPosition(stationsNames,mSOurce);
+        final int destinationIndex = arrayPosition(stationsNames,mDestination);
+
+        String origin = stationsCord[0];
+        String srcDesStations = "";
+        String destination = stationsCord[stationsCord.length-1];
         String wayPoints="";
-        for(int i=sourceIndex+1;i<destinationIndex;i++){
+        for(int i=1;i<stationsCord.length-1;i++){
             wayPoints+=stationsCord[i]+"|";
         }
-        wayPoints = removeLastChar(wayPoints);
+
+        for(int i=sourceIndex;i<=destinationIndex;i++){
+            srcDesStations+=stationsNames[i]+" - ";
+        }
+        srcDesStations = srcDesStations.substring(0,srcDesStations.length()-1);
+        wayPoints = wayPoints.substring(0,wayPoints.length()-1);
 
         origin=origin.replace("-",",");
         destination=destination.replace("-",",");
         wayPoints=wayPoints.replace("-",",");
 
         ServiceBuilder Builder = new ServiceBuilder();
-        API.Routes service =Builder.BuildMovies();
+        API.Routes service =Builder.BuildRoutes();
+        final String finalSrcDesStations = srcDesStations;
         service.getRoutes(origin,destination,wayPoints,Constants.API_KRY, new retrofit.Callback<RouteObject>() {
             @Override
             public void success(RouteObject routeObject, Response response) {
-               // routeObject.routes.get(0).legs
+                Double stationSourceDuration = getDisAndTime(routeObject,sourceIndex,destinationIndex,bus);
+
+                bus.setWaiting(String.valueOf(calcWaiting(bus.getmTripDuration(),bus.getmStartTime(),stationSourceDuration))+" minutes");
+                bus.setSouDestStations(finalSrcDesStations);
+                mBusAdapter.add(bus);
+                mBusAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void failure(RetrofitError error) {
-
-                Toast.makeText(AvailableBuses.this,error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(AvailableBuses.this,"Check Your Internet Connection",Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    private Double getDisAndTime(RouteObject routeObject,int sourceIndex,int destinationIndex,Bus bus) {
+
+        Double duration =0.0, distance=0.0 ,stationSourceDuration=0.0;
+        for(int i =0; i<routeObject.routes.get(0).legs.size();i++){
+            RouteObject.Leg leg = routeObject.routes.get(0).legs.get(i);
+
+            if( i < sourceIndex)
+                stationSourceDuration += leg.duration.value;
+
+            if(i >= sourceIndex && i<destinationIndex){
+                duration += leg.duration.value;
+                distance += leg.distance.value;
+            }
+        }
+
+        distance = round(distance/1000,2);
+        bus.setDistance(String.valueOf(distance)+" km");
+        bus.setDuration(String.valueOf(duration.intValue()/60)+" minute");
+
+        stationSourceDuration = stationSourceDuration/60;
+        return stationSourceDuration;
     }
 
     int arrayPosition(String [] stationsName , String station){
@@ -211,10 +281,12 @@ public class AvailableBuses extends ActionBarActivity {
         return index;
     }
 
-    public String removeLastChar(String str) {
-        if (str != null && str.length() > 0 && str.charAt(str.length()-1)=='x') {
-            str = str.substring(0, str.length()-1);
-        }
-        return str;
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 }

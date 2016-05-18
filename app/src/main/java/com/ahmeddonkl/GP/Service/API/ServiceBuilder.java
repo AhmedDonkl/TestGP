@@ -12,7 +12,7 @@ public class ServiceBuilder {
     public ServiceBuilder(){
         restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint(Constants.BASE_URL).build();
     }
-    public API.Routes BuildMovies(){
+    public API.Routes BuildRoutes(){
         return restAdapter.create(API.Routes.class);
     }
 
