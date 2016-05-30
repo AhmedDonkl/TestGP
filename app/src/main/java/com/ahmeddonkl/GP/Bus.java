@@ -1,9 +1,11 @@
 package com.ahmeddonkl.GP;
 
+import java.io.Serializable;
+
 /**
  * Created by Ahmed Donkl on 12/15/2015.
  */
-public class Bus {
+public class Bus implements Serializable{
     private double mNumber;
     private String mStartTime;
     private String mIntervalTime;

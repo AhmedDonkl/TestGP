@@ -9,47 +9,68 @@
     android:padding="5dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="3">
 
 
     <ImageView
-        android:layout_weight="15"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_marginRight="5dp"
+        android:padding="10dp"
+        android:layout_weight=".7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/busss"/>
 
-<TextView
-    android:layout_weight="2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/item_bus_num"
-    android:textColor="@color/colorPrimary"
-    android:textSize="35sp"
-    android:textStyle="bold"
-    android:text="300"/>
+        <LinearLayout
+            android:layout_weight="1.15"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="15sp"
+                android:text="Bus Number"/>
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_bus_num"
+                android:textColor="@color/colorPrimary"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:text="300"/>
+        </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_weight="1.15"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textSize="15sp"
+                android:text="Price"/>
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_bus_price"
+                android:textColor="@color/colorPrimary"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:text="1 L.E"/>
+        </LinearLayout>
 
-    <TextView
-        android:layout_weight="2"
-        android:layout_marginLeft="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/item_bus_startTime"
-        android:textColor="@color/colorAccent"
-        android:textSize="20sp"
-        android:text="7 pm"/>
-    <TextView
-        android:layout_weight="2"
-        android:layout_marginLeft="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/item_bus_price"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="18sp"
-        android:text="1 L.E"/>
     </LinearLayout>
 <LinearLayout
+    android:layout_marginTop="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <TextView
@@ -61,6 +82,33 @@
         android:text="Station1 - Station2 - Station3 -Station4"/>
 </LinearLayout>
     <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3">
+        <TextView
+            android:textSize="15sp"
+            android:textColor="@color/colorAccent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="waiting time"/>
+        <TextView
+            android:textSize="15sp"
+            android:textColor="@color/colorAccent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Duration"/>
+        <TextView
+            android:textSize="15sp"
+            android:textColor="@color/colorAccent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Distance"/>
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="3">
@@ -69,18 +117,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="17sp"
             android:text="waiting time"/>
         <TextView
             android:id="@+id/item_bus_duration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="17sp"
             android:text="Duration"/>
         <TextView
             android:id="@+id/item_bus_distance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textSize="17sp"
             android:text="Distance"/>
     </LinearLayout>
 
